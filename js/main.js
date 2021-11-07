@@ -1,5 +1,5 @@
-const TURKEY_COUNT = 100;
-const TURKEY_SPEED = 200;
+const TURKEY_COUNT = 75;
+const TURKEY_SPEED = 150;
 
 document.addEventListener('DOMContentLoaded', () => {
     new ThanksgivingIsComing();

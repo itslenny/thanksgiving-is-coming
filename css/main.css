@@ -21,7 +21,7 @@ body {
     width: 18vmax;
     height: 18vmax;
 
-    background: no-repeat url("../images/jive-turkey.png");
+    background: no-repeat url("../images/jive-turkey-256.png");
     background-size: 16vmax;
     transform-origin: 0 0;
     z-index: 55;
