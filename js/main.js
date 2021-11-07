@@ -43,7 +43,7 @@ class ThanksgivingIsComing {
     }
 
     get formattedTimeRemaining() {
-        const formatTimePart = (v, last) => (v > 9 ? '' : '0') + v + (last || v === 0 ? '' : ':');
+        const formatTimePart = (v, last) => (v > 9 ? '' : '0') + v + (last ? '' : ':');
         const msRemaining = this.thanksgiving - Date.now();
         let seconds = parseInt(msRemaining / 1000, 10);
         const hours = Math.floor(seconds / 3600);
