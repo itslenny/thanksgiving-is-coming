@@ -1,38 +1,49 @@
 const STARTING_TURKEY_COUNT = 2;
-const TURKEY_SPEED = 150;
-const TICK_TIME = 200;
+const TURKEY_SPEED = 20;
+const TICK_TIME = 10;
+const VIEWPORT_BUFFER_START_PX = 10; // 20;
+const VIEWPORT_BUFFER_END_PX = 100;
 
 document.addEventListener('DOMContentLoaded', () => {
     new ThanksgivingIsComing();
 });
 
-function doTurkeyBrainThings(sourceTurkey) {
-    const turkey = { ...sourceTurkey };
-
+function createNewTurkey() {
     const maxX = window.innerWidth;
     const maxY = window.innerHeight;
+    return { x: parseInt(maxX / 2, 10), y: parseInt(maxY / 2, 10), flip: false };
+}
+
+function doTurkeyBrainThings(sourceTurkey) {
+    const maxX = window.innerWidth;
+    const maxY = window.innerHeight;
+
+    const turkey = { ...sourceTurkey };
 
     const dirX = turkey.dirX || parseInt(TURKEY_SPEED * (Math.random() - 0.5), 10);
     const dirY = turkey.dirY || parseInt(TURKEY_SPEED * (Math.random() - 0.5), 10);
 
+    turkey.dirX = dirX;
+    turkey.dirY = dirY;
     turkey.x += dirX;
     turkey.y += dirY;
-    turkey.flip = dirX < 0 ? false : true;
 
-    if (turkey.x > maxX || turkey.x < 0) {
+    if (turkey.x > maxX - VIEWPORT_BUFFER_END_PX || turkey.x < VIEWPORT_BUFFER_START_PX) {
         turkey.dirX = -dirX;
-        turkey.x = Math.min(Math.max(turkey.x, 0), maxX)
+        // turkey.x = Math.min(Math.max(turkey.x, VIEWPORT_BUFFER_START_PX), maxX - VIEWPORT_BUFFER_END_PX)
     }
-    if (turkey.y > maxY || turkey.y < 0) {
+    if (turkey.y > maxY - VIEWPORT_BUFFER_END_PX || turkey.y < VIEWPORT_BUFFER_START_PX) {
         turkey.dirY = -dirY;
-        turkey.y = Math.min(Math.max(turkey.y, 0), maxY)
+        // turkey.y = Math.min(Math.max(turkey.y, VIEWPORT_BUFFER_START_PX), maxY - VIEWPORT_BUFFER_END_PX)
     }
+    turkey.flip = dirX < 0 ? false : true;
     return turkey;
 }
 
 class ThanksgivingIsComing {
 
     constructor() {
+        this.lastTick = Date.now();
 
         // init thanksgiving
         const thanksGivingUTC = new Date('2021-11-25')
@@ -43,15 +54,15 @@ class ThanksgivingIsComing {
 
         // init view model
         this.viewModel = new ActiveViewModel();
-        this.viewModel.turkeys = new Array(STARTING_TURKEY_COUNT).fill(1).map(_ => ({ x: 0, y: 0, flip: false }));
+        this.viewModel.turkeys = new Array(STARTING_TURKEY_COUNT).fill(1).map(_ => createNewTurkey());
 
         // add click listeners
         document.getElementById('add-turkey').addEventListener('click', () => {
-            this.viewModel.turkeys.push({ ...this.viewModel.turkeys[0], dirX: null, dirY: null, flip: false });
+            this.viewModel.turkeys.push(createNewTurkey());
         });
 
         // start the clock
-        this.timer = setInterval(this.onEachTick.bind(this), TICK_TIME);
+        this.onEachTick();
     }
 
     get formattedTimeRemaining() {
@@ -66,9 +77,14 @@ class ThanksgivingIsComing {
 
     // this function is called...
     onEachTick() {
-        this.viewModel.counter = this.formattedTimeRemaining;
+        const now = Date.now();
+        if (now - this.lastTick > TICK_TIME) {
+            this.lastTick = now;
+            this.viewModel.counter = this.formattedTimeRemaining;
 
-        this.viewModel.turkeys = this.viewModel.turkeys.map(doTurkeyBrainThings);
+            this.viewModel.turkeys = this.viewModel.turkeys.map(doTurkeyBrainThings);
+        }
+        requestAnimationFrame(() => this.onEachTick());
     }
 }
 
