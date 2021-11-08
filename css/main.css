@@ -3,42 +3,53 @@ body {
     padding: 0;
     margin: 0;
     font-family: Helvetica, Arial, sans-serif;
+    background: skyblue;
+    background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(135,206,235,1) 17%);
+
 }
 
 #viewport {
+    position: relative;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
+    z-index: 1;
 }
 
-.turkey-cage {
+#turkey-cage {
     position: relative;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
     background: skyblue;
+    z-index: 2;
 }
 
 .jive-turkey {
-    position: absolute;
+    position: fixed;
     width: 18vmax;
     height: 18vmax;
 
     background: no-repeat url("../images/jive-turkey-256.png");
     background-size: 16vmax;
     transform-origin: center center;
-    z-index: 55;
+    z-index: 33;
 }
 
 .falling-santa {
-    position: absolute;
+    position: fixed;
     width: 12vmax;
     height: 12vmax;
     background: no-repeat url("../images/santa-fall.png");
     background-size: 12vmax;
     transform-origin: center center;
-    z-index: 66;
+    z-index: 22;
     animation: SantaFallAnimation 5s 0s;
+    transform: translate(0,0) rotate(0deg);
 }
 
 .falling-santa.falling-santa-flipped {
@@ -47,12 +58,12 @@ body {
 
 @keyframes SantaFallAnimation {
     0% {
-        transform: translate3d(0, 0, 0) rotate(-20deg);
+        transform: translate(0, 0) rotate(-20deg);
         opacity: 1;
     }
 
     99% {
-        transform: translate3d(-230px, 150vh, 0) rotate(-120deg);
+        transform: translate(-230px, 150vh) rotate(-120deg);
         opacity: 1;
     }
 
@@ -77,7 +88,7 @@ body {
 }
 
 .jive-turkey .bitch-ass-santa {
-    position: absolute;
+    position: fixed;
     width: 12vmax;
     height: 12vmax;
     right: 3vmax;
@@ -94,22 +105,44 @@ body {
 }
 
 .counter-target {
-    position: absolute;
+    position: fixed;
     background: rgba(255, 255, 255, 0.8);
-    border-radius: 40px;
-    padding: 40px 80px;
+    padding: 30px 60px;
     border: 2px solid brown;
     font-size: 40px;
     text-align: center;
     z-index: 999;
     left: 50%;
+    width: 100%;
     top: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.4);
+    opacity: 0.8;
+}
+
+.counter-target p {
+    margin: 0;
+    padding: 5px 50px;
+    display: inline-block;
+    color: black;
+    white-space: nowrap;
+}
+
+.counter-target p.hours {
+    color: #444;
+    font-size: 1em;
+}
+.counter-target p.minutes {
+    color: #666;
+    font-size: 0.8em;
+}
+.counter-target p.seconds {
+    color: #888;
+    font-size: 0.6em;
 }
 
 #turkey-count {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     left: 20px;
     font-size: 20px;
@@ -120,7 +153,7 @@ body {
     border-radius: 10px;
 }
 #add-turkey {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     right: 20px;
     background: green;
@@ -153,4 +186,17 @@ body {
         font-size: 16px;
         transform: translate(-50%, 0);
     }
+    .counter-target p {
+        padding: 10px 0;
+        display: block;
+    }
+}
+
+#lake-of-fire-and-fry {
+    height: 50vh;
+    width: 100vw;
+    background-image: url("../images/lake-o-fire-1.gif");
+    background-repeat: repeat-x;
+    background-position: right 20px bottom -10px;
+
 }

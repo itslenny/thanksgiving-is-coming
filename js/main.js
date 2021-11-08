@@ -48,7 +48,7 @@ class ThanksgivingIsComing {
         this.lastTick = Date.now();
 
         // init thanksgiving
-        const thanksGivingUTC = new Date('2021-11-25')
+        const thanksGivingUTC = new Date('2021-11-25');
         const timeZoneOffset = thanksGivingUTC.getTimezoneOffset();
         const thanksGivingLocal = new Date(thanksGivingUTC);
         thanksGivingLocal.setMinutes(thanksGivingLocal.getMinutes() + timeZoneOffset);
@@ -67,14 +67,15 @@ class ThanksgivingIsComing {
         this.onEachTick();
     }
 
-    get formattedTimeRemaining() {
-        const formatTimePart = (v, last) => (v > 9 ? '' : '0') + v + (last ? '' : ':');
+    get formattedTimeRemainingParts() {
+        const formatTimePart = (v, suffix) => (v > 9 ? '' : '0') + v + ' ' + suffix + (v === 1 ? '' : 's');
         const msRemaining = this.thanksgiving - Date.now();
         let seconds = parseInt(msRemaining / 1000, 10);
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds - (hours * 3600)) / 60);
         seconds = seconds - (hours * 3600) - (minutes * 60);
-        return formatTimePart(hours) + formatTimePart(minutes) + formatTimePart(seconds, true);
+        return [formatTimePart(hours, 'hour'), formatTimePart(minutes, 'minute'), formatTimePart(seconds, 'second')]
+
     }
 
     // this function is called...
@@ -82,7 +83,7 @@ class ThanksgivingIsComing {
         const now = Date.now();
         if (now - this.lastTick > TICK_TIME) {
             this.lastTick = now;
-            this.viewModel.counter = this.formattedTimeRemaining;
+            this.viewModel.counter = this.formattedTimeRemainingParts;
 
             this.viewModel.turkeys = this.viewModel.turkeys.map(doTurkeyBrainThings);
         }
@@ -98,7 +99,18 @@ class ActiveViewModel {
     set counter(value) {
         this._counter = value;
         const target = document.querySelectorAll('.counter-target');
-        target?.forEach(e => e.innerText = value);
+
+        target?.forEach(e => {
+            const hourTarget = e.querySelector('.hours');
+            const minuteTarget = e.querySelector('.minutes');
+            const secondTarget = e.querySelector('.seconds');
+    
+            hourTarget.innerText = value[0] || '';
+            minuteTarget.innerText = value[1] || '';
+            secondTarget.innerText = value[2] || '';
+            // console.log('value', value, hourTarget, minuteTarget, secondTarget);
+        });
+
     }
 
     get counter() {
@@ -146,10 +158,10 @@ class ActiveViewModel {
                 newSanta.style.left = santaRect.x + 'px';
                 newSanta.style.top = santaRect.y + 'px';
 
-                const viewport = document.getElementById('viewport');
-                viewport.appendChild(newSanta);
+                const turkeyCage = document.getElementById('turkey-cage');
+                turkeyCage.appendChild(newSanta);
                 newSanta.addEventListener('animationend', () => {
-                    viewport.removeChild(newSanta);
+                    turkeyCage.removeChild(newSanta);
                 });
 
                 target.classList.remove('has-santa');
