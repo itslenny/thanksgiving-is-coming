@@ -8,6 +8,36 @@ body {
 
 }
 
+#source-code {
+    position: fixed;
+    right: 0;
+    top: 0;
+    color: white;
+    background: rgba(50,50,255, 0.4);
+    border-left: 1px solid rgba(255,255,255,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.7);
+    padding: 4px 8px;
+    margin: 0;
+    border-bottom-left-radius: 10px;
+    font-size: 0.7em;
+    text-decoration: none;
+    z-index: 999999;
+}
+
+.the-marquee {
+    font-size: 30px;
+    position: absolute;
+    top: 12vh;
+    letter-spacing: 10px;
+    font-weight: bold;
+    z-index: 999999;
+}
+
+#source-code:hover {
+    background: yellow;
+    color: purple;
+}
+
 #viewport {
     position: relative;
     height: 100vh;
