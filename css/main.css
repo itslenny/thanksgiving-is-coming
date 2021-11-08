@@ -51,6 +51,9 @@ body {
     font-size: 20px;
     z-index: 999;
     font-weight: bold;
+    padding: 10px 20px;
+    background: rgba(255,255,255, 0.5);
+    border-radius: 10px;
 }
 #add-turkey {
     position: absolute;
