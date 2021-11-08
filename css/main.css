@@ -6,8 +6,9 @@ body {
 }
 
 #viewport {
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
 .turkey-cage {
@@ -27,6 +28,69 @@ body {
     background-size: 16vmax;
     transform-origin: center center;
     z-index: 55;
+}
+
+.falling-santa {
+    position: absolute;
+    width: 12vmax;
+    height: 12vmax;
+    background: no-repeat url("../images/santa-fall.png");
+    background-size: 12vmax;
+    transform-origin: center center;
+    z-index: 66;
+    animation: SantaFallAnimation 5s 0s;
+}
+
+.falling-santa.falling-santa-flipped {
+    animation: SantaFallAnimationFlipped 5s 0s;
+}
+
+@keyframes SantaFallAnimation {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(-20deg);
+        opacity: 1;
+    }
+
+    99% {
+        transform: translate3d(-230px, 150vh, 0) rotate(-120deg);
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes SantaFallAnimationFlipped {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(20deg);
+        opacity: 1;
+    }
+
+    99% {
+        transform: translate3d(230px, 150vh, 0) rotate(120deg);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.jive-turkey .bitch-ass-santa {
+    position: absolute;
+    width: 12vmax;
+    height: 12vmax;
+    right: 3vmax;
+    bottom: -6vmax;
+    background: no-repeat url("../images/santa-fall.png");
+    background-size: 12vmax;
+    transform-origin: center center;
+    z-index: 66;
+    display: none;
+}
+
+.jive-turkey.has-santa .bitch-ass-santa {
+    display: block;
 }
 
 .counter-target {
@@ -52,7 +116,7 @@ body {
     z-index: 999;
     font-weight: bold;
     padding: 10px 20px;
-    background: rgba(255,255,255, 0.5);
+    background: rgba(255, 255, 255, 0.5);
     border-radius: 10px;
 }
 #add-turkey {
@@ -76,7 +140,7 @@ body {
     border-color: green;
 }
 
-@media (max-width:961px) {
+@media (max-width: 961px) {
     #add-turkey {
         left: 20px;
         width: calc(100% - 40px);
@@ -87,6 +151,6 @@ body {
         left: 50%;
         bottom: 100px;
         font-size: 16px;
-        transform: translate(-50%,0);
+        transform: translate(-50%, 0);
     }
 }

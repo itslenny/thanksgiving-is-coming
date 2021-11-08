@@ -1,8 +1,6 @@
 const STARTING_TURKEY_COUNT = 2;
 const TURKEY_SPEED = 20;
 const TICK_TIME = 10;
-const VIEWPORT_BUFFER_START_PX = 10; // 20;
-const VIEWPORT_BUFFER_END_PX = 100;
 
 document.addEventListener('DOMContentLoaded', () => {
     new ThanksgivingIsComing();
@@ -11,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function createNewTurkey() {
     const maxX = window.innerWidth;
     const maxY = window.innerHeight;
-    return { x: parseInt(maxX / 2, 10), y: parseInt(maxY / 2, 10), flip: false };
+    return { x: parseInt(maxX / 2, 10), y: parseInt(maxY / 2, 10), flip: false, hasSanta: false };
 }
 
 function doTurkeyBrainThings(sourceTurkey) {
@@ -28,13 +26,17 @@ function doTurkeyBrainThings(sourceTurkey) {
     turkey.x += dirX;
     turkey.y += dirY;
 
-    if (turkey.x > maxX - VIEWPORT_BUFFER_END_PX || turkey.x < VIEWPORT_BUFFER_START_PX) {
+    if (dirX > 0 && turkey.x > maxX - 200) {
         turkey.dirX = -dirX;
-        // turkey.x = Math.min(Math.max(turkey.x, VIEWPORT_BUFFER_START_PX), maxX - VIEWPORT_BUFFER_END_PX)
+    } else if (dirX < 0 && turkey.x < 0) {
+        turkey.dirX = -dirX;
     }
-    if (turkey.y > maxY - VIEWPORT_BUFFER_END_PX || turkey.y < VIEWPORT_BUFFER_START_PX) {
+    if (dirY > 0 && turkey.y > maxY) {
         turkey.dirY = -dirY;
-        // turkey.y = Math.min(Math.max(turkey.y, VIEWPORT_BUFFER_START_PX), maxY - VIEWPORT_BUFFER_END_PX)
+        turkey.hasSanta = true;
+    } else if (dirY < 0 && turkey.y < 0) {
+        turkey.dirY = -dirY;
+        turkey.hasSanta = false;
     }
     turkey.flip = dirX < 0 ? false : true;
     return turkey;
@@ -110,7 +112,9 @@ class ActiveViewModel {
             if (turkeys.length > value.length) {
                 turkeys[0].parentElement.removeChild(turkeys[0]);
             } else if (turkeys.length < value.length) {
-                turkeys[0].parentElement.appendChild(turkeys[0].cloneNode());
+                const clonedTurkey = turkeys[0].cloneNode(true);
+                clonedTurkey.classList.remove('has-santa');
+                turkeys[0].parentElement.appendChild(clonedTurkey);
             } else {
                 turkeys.forEach((t, i) => this.drawTurkey(value[i], t));
                 break;
@@ -127,5 +131,32 @@ class ActiveViewModel {
     drawTurkey(turkey, target) {
         const scale = turkey.flip ? -1 : 1;
         target.style.transform = `translate(${turkey.x}px, ${turkey.y}px) scaleX(${scale})`;
+        const domHasSanta = target.classList.contains('has-santa');
+
+        if (turkey.hasSanta !== domHasSanta) {
+            if (domHasSanta) {
+                const santa = target.querySelector('.bitch-ass-santa');
+                const santaRect = santa.getBoundingClientRect();
+                const newSanta = santa.cloneNode();
+                newSanta.classList.remove('bitch-ass-santa');
+                newSanta.classList.add('falling-santa');
+                if (turkey.flip) {
+                    newSanta.classList.add('falling-santa-flipped');
+                }
+                newSanta.style.left = santaRect.x + 'px';
+                newSanta.style.top = santaRect.y + 'px';
+
+                const viewport = document.getElementById('viewport');
+                viewport.appendChild(newSanta);
+                newSanta.addEventListener('animationend', () => {
+                    viewport.removeChild(newSanta);
+                });
+
+                target.classList.remove('has-santa');
+
+            } else {
+                target.classList.add('has-santa');
+            }
+        }
     }
 }
